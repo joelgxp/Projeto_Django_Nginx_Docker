@@ -27,16 +27,18 @@ function closePopup() {
 // Popup formulário
 function openForm(button, id) {
     const buttonID = button.id
-    popForm.classList.add('open-wrapper')
+    let url;
+
     if (buttonID === "editar") {
-        document.getElementById("title-form").innerText = "Editar"
-        editarLider(id)
+        url = `/criar_editar_lider/${id}/`;
     } else {
-        document.getElementById("title-form").innerText = "Criar"
-        criarLider()
+        url = "/criar_editar_lider/";
     }
-    blur.classList.add('active')
+
+    window.location.href = url;
+    blur.classList.add('active');
 }
+
 
 function closeForm() {
     popForm.classList.remove('open-wrapper');
@@ -128,115 +130,6 @@ document.querySelectorAll('.table-sortable th').forEach(headerCell => {
     })
 })
 
-function listar() {
-    getLideres()
-        .then((data) => {
-            const lideresAtivos = data.filter(leader => leader.ativo === 1);
-            renderizarTabela(lideresAtivos);
-
-            inputArray = Array.from(inputRadio);
-            inputArray.forEach((element) => {
-                element.addEventListener('click', () => {
-                    if (element.checked) {
-                        let idSelecionado = element.id;
-                        const lideresFiltrados = filtrarPorAtivo(data, idSelecionado);
-                        renderizarTabela(lideresFiltrados);
-                    }
-                });
-            });
-        })
-        .catch((erro) => {
-            console.log(erro);
-        });
-}
-
-
-function renderizarTabela(lista) {
-    console.log('Lista de lideres:', lista);
-    // Função para renderizar a tabela com base na lista fornecida
-    tbody.innerHTML = '';
-    lista.forEach((item) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td data-title="ID">${item.id}</td>
-            <td data-title="Nome">${item.nome}</td>
-            <td data-title="Setor">${item.departamento}</td>
-            <td data-title="E-mail">${item.email}</td>
-            <td data-title="Ações">
-                <button class="btn" type="button" title="Editar" onclick="openForm(this, ${item.id})" id="editar">
-                    <i class="ri-edit-2-fill"></i>
-                </button>
-            </td>
-            <td>
-                <button class="btn" type="submit" title="Deletar" id="btnDeletar" onclick="openPopup(${item.id})">
-                    <i class="ri-delete-bin-2-fill"></i>
-                </button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-
-function deletar() {
-    const id = idDelete
-    const dados = { ativo: 0 }
-    putLiderAtivo(id, dados)
-        .then(() => {
-            closePopup();
-            alertaDeletadoSucesso();
-        })
-        .catch((erro) => {
-            console.log(erro)
-        })
-}
-
-function criarLider() {
-    formLider.addEventListener('submit', (e) => {
-        e.preventDefault()
-        const fd = new FormData(formLider)
-        const dadosFormulario = Object.fromEntries(fd)
-
-        postLider(dadosFormulario)
-            .then(() => {
-                btnSalvar.disabled = true;
-                alertaSucesso()
-            })
-            .catch((erro) => {
-                console.log(erro)
-            })
-
-    })
-
-}
-
-function editarLider(id) {
-    getLider(id)
-        .then((data) => {
-            document.getElementById('nome').value = data.nome;
-            document.getElementById('departamento').value = data.departamento;
-            document.getElementById('email').value = data.email;
-            document.getElementById('password').value = data.password;
-        })
-        .catch((erro) => {
-            console.log(erro)
-        })
-
-    formLider.addEventListener('submit', (e) => {
-        e.preventDefault()
-        const fd = new FormData(formLider)
-        const dadosFormulario = Object.fromEntries(fd)
-
-        putLider(id, dadosFormulario)
-            .then(() => {
-                btnSalvar.disabled = true;
-                alertaSucesso()
-            })
-            .catch((erro) => {
-                console.log(erro)
-            })
-    })
-}
 
 
 function filtrarPorAtivo(data, idSelecionado) {
@@ -287,7 +180,3 @@ $('.close-btn-del').click(function () {
     $('.alert-reg').addClass("hide");
 });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-    listar()
-})

@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="open-wrapper" id="wrapper">
+    <form action="/criar_editar_lider/" method="post" id="formLider">
+
+        <h2 class="title" id="title-form"></h2>
+
+        {% csrf_token %}
+        <div class="text-input">
+            <label for="nome">Nome</label>
+            {{ form.nome }}
+        </div>
+        <div class="text-input">
+            <label for="departamento">Setor</label>
+            {{ form.departamento }}
+        </div>
+        <div class="text-input">
+            <label for="email">E-mail</label>
+            {{ form.email }}
+        </div>
+        <div class="text-input">
+            <label for="password">Senha</label>
+            {{ form.senha }}
+        </div>
+        <div class="buttons">
+            <button type="submit" class="btn-save" id="btn-save">Salvar</button>
+            <button class="btn-primary" onclick="closeForm()">Cancelar</button>
+        </div>
+
+        <input type="submit" value="Salvar">
+    </form>
+
+</div>
+
+{% endblock %}

@@ -3,4 +3,4 @@
 python manage.py migrate --no-input
 python manage.py collectstatic --no-input
 
-gunicorn projeto.wsgi:application --bind 0.0.0.0:8000
+gunicorn base.wsgi:application --bind 0.0.0.0:8000
